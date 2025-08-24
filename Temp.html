@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Temperature Converter</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+  <h2>Temperature Converter</h2>
+
+  <label for="tempInput">Enter Temperature:</label>
+  <input id="tempInput" type="text" placeholder="Enter a number" />
+
+  <label for="unitSelect">Select Unit:</label>
+  <select id="unitSelect">
+    <option value="celsius">Celsius (°C)</option>
+    <option value="fahrenheit">Fahrenheit (°F)</option>
+    <option value="kelvin">Kelvin (K)</option>
+  </select>
+
+  <button id="convertBtn">Convert</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  function roundTwo(num) {
+    return Math.round(num * 100) / 100;
+  }
+
+  function convertTemperature(value, fromUnit) {
+    let celsius;
+
+    switch (fromUnit) {
+      case 'celsius':
+        celsius = value;
+        break;
+      case 'fahrenheit':
+        celsius = (value - 32) * 5 / 9;
+        break;
+      case 'kelvin':
+        celsius = value - 273.15;
+        break;
+      default:
+        throw new Error('Invalid unit');
+    }
+
+    return {
+      celsius: roundTwo(celsius),
+      fahrenheit: roundTwo(celsius * 9 / 5 + 32),
+      kelvin: roundTwo(celsius + 273.15)
+    };
+  }
+
+  document.getElementById('convertBtn').addEventListener('click', () => {
+    const tempInput = document.getElementById('tempInput').value.trim();
+    const fromUnit = document.getElementById('unitSelect').value;
+    const resultDiv = document.getElementById('result');
+
+    if (tempInput === '' || isNaN(tempInput)) {
+      resultDiv.textContent = 'Please enter a valid number.';
+      return;
+    }
+
+    const inputTemp = parseFloat(tempInput);
+    const converted = convertTemperature(inputTemp, fromUnit);
+
+    const units = {
+      celsius: '°C',
+      fahrenheit: '°F',
+      kelvin: 'K'
+    };
+
+    let output = 'Converted temperatures:\n';
+    for (const unit in converted) {
+      if (unit !== fromUnit) {
+        output += `${converted[unit]} ${units[unit]}\n`;
+      }
+    }
+
+    resultDiv.textContent = output;
+  });
+</script>
+
+</body>
+</html>
